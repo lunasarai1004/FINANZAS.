@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💸 Mis Finanzas</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --pink-50: #fbeaf0;
+    --pink-100: #f4c0d1;
+    --pink-200: #ed93b1;
+    --pink-400: #d4537e;
+    --pink-600: #993556;
+    --pink-800: #72243e;
+    --green-50: #eaf3de;
+    --green-100: #c0dd97;
+    --green-600: #3b6d11;
+    --green-800: #27500a;
+    --red-50: #fcebeb;
+    --red-100: #f7c1c1;
+    --red-600: #a32d2d;
+    --purple-50: #eeedfe;
+    --purple-100: #cecbf6;
+    --purple-600: #534ab7;
+    --gray-100: #f5f5f4;
+    --gray-200: #e8e8e6;
+    --gray-400: #b4b2a9;
+    --gray-700: #444441;
+    --text: #1a1a1a;
+    --text-muted: #6b6b6b;
+    --bg: #fff;
+    --surface: #fafafa;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f9f0f4;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    color: var(--text);
+  }
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    background: var(--bg);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 2px 24px rgba(212,83,126,0.08);
+  }
+  .page-header { margin-bottom: 2rem; }
+  .page-emoji { font-size: 52px; line-height: 1; margin-bottom: 10px; }
+  .page-title { font-size: 30px; font-weight: 600; color: var(--text); }
+  .page-subtitle { font-size: 15px; color: var(--pink-600); margin-top: 5px; }
+
+  .divider { height: 0.5px; background: var(--pink-100); margin: 1.6rem 0; }
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--pink-400); margin-bottom: 12px;
+  }
+
+  /* Month nav */
+  .month-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 1.4rem; }
+  .month-btn {
+    background: var(--pink-50); border: 0.5px solid var(--pink-100);
+    border-radius: 8px; padding: 6px 14px; font-size: 13px;
+    color: var(--pink-600); cursor: pointer; transition: background 0.15s;
+    font-family: inherit;
+  }
+  .month-btn:hover { background: var(--pink-100); }
+  .month-label { font-size: 20px; font-weight: 600; flex: 1; text-align: center; color: var(--text); }
+
+  /* Summary */
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.6rem; }
+  .summary-card { border-radius: 14px; padding: 16px; text-align: center; border: 0.5px solid; }
+  .summary-card .s-label { font-size: 12px; margin-bottom: 8px; font-weight: 500; }
+  .summary-card .s-val { font-size: 24px; font-weight: 600; }
+  .summary-card.income { background: var(--green-50); border-color: var(--green-100); }
+  .summary-card.income .s-label { color: var(--green-600); }
+  .summary-card.income .s-val { color: var(--green-800); }
+  .summary-card.expense { background: var(--red-50); border-color: var(--red-100); }
+  .summary-card.expense .s-label { color: var(--red-600); }
+  .summary-card.expense .s-val { color: var(--red-600); }
+  .summary-card.balance { background: var(--pink-50); border-color: var(--pink-100); }
+  .summary-card.balance .s-label { color: var(--pink-600); }
+  .summary-card.balance .s-val { color: var(--pink-800); }
+
+  /* Table */
+  .table-wrap { border: 0.5px solid var(--pink-100); border-radius: 14px; overflow: hidden; margin-bottom: 1rem; }
+  .table-head {
+    display: grid; grid-template-columns: 36px 1fr 120px 110px 90px 36px;
+    background: var(--pink-50); padding: 10px 16px;
+    border-bottom: 0.5px solid var(--pink-100); gap: 8px; align-items: center;
+  }
+  .th { font-size: 11px; font-weight: 600; color: var(--pink-400); text-transform: uppercase; letter-spacing: 0.07em; }
+  .th.right { text-align: right; }
+
+  .t-row {
+    display: grid; grid-template-columns: 36px 1fr 120px 110px 90px 36px;
+    padding: 12px 16px; border-bottom: 0.5px solid #fdf0f5;
+    align-items: center; gap: 8px; transition: background 0.12s; cursor: pointer;
+  }
+  .t-row:last-child { border-bottom: none; }
+  .t-row:hover { background: #fdf6f9; }
+  .t-row.done-row { opacity: 0.6; }
+
+  .check-btn {
+    width: 24px; height: 24px; border-radius: 7px;
+    border: 1.5px solid var(--pink-100); background: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.18s; flex-shrink: 0; font-size: 14px; color: white;
+  }
+  .check-btn.done { background: var(--pink-400); border-color: var(--pink-400); }
+  .check-btn:hover { border-color: var(--pink-400); }
+
+  .row-name { font-size: 14px; color: var(--text); }
+  .row-name.done { text-decoration: line-through; color: var(--text-muted); }
+
+  .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; display: inline-block; border: 0.5px solid; }
+  .badge-fijo { background: var(--pink-50); color: var(--pink-600); border-color: var(--pink-100); }
+  .badge-variable { background: var(--purple-50); color: var(--purple-600); border-color: var(--purple-100); }
+  .badge-ahorro { background: var(--green-50); color: var(--green-600); border-color: var(--green-100); }
+  .badge-ingreso { background: #e6f1fb; color: #185fa5; border-color: #b5d4f4; }
+
+  .amount { font-size: 14px; font-weight: 600; text-align: right; }
+  .amount.neg { color: var(--red-600); }
+  .amount.pos { color: var(--green-800); }
+  .t-date { font-size: 12px; color: var(--text-muted); text-align: right; }
+
+  .del-btn {
+    width: 24px; height: 24px; border-radius: 6px; border: none;
+    background: transparent; cursor: pointer; color: var(--gray-400);
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+    transition: all 0.15s; font-family: inherit;
+  }
+  .del-btn:hover { background: var(--red-50); color: var(--red-600); }
+
+  .add-row-btn {
+    display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+    color: var(--pink-400); font-size: 13px; cursor: pointer;
+    transition: background 0.12s; border: none; background: transparent;
+    width: 100%; font-family: inherit; border-top: 0.5px solid var(--pink-100);
+  }
+  .add-row-btn:hover { background: var(--pink-50); }
+
+  /* Goals */
+  .goal-card {
+    background: var(--bg); border: 0.5px solid var(--pink-100);
+    border-radius: 14px; padding: 16px; margin-bottom: 10px; cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+  .goal-card:hover { box-shadow: 0 2px 12px rgba(212,83,126,0.12); }
+  .goal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .goal-name { font-size: 15px; font-weight: 500; color: var(--text); }
+  .goal-pct { font-size: 14px; color: var(--pink-400); font-weight: 600; }
+  .progress-bg { height: 10px; background: var(--pink-50); border-radius: 20px; overflow: hidden; }
+  .progress-fill { height: 10px; border-radius: 20px; background: linear-gradient(90deg, var(--pink-200), var(--pink-400)); transition: width 0.6s ease; }
+  .goal-amounts { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--text-muted); }
+
+  .add-btn {
+    width: 100%; padding: 11px; border-radius: 12px;
+    border: 1.5px dashed var(--pink-100); background: transparent;
+    color: var(--pink-400); font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    transition: all 0.15s; font-family: inherit; margin-bottom: 10px;
+  }
+  .add-btn:hover { background: var(--pink-50); border-color: var(--pink-400); }
+
+  /* Tips */
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tip-card { background: var(--pink-50); border: 0.5px solid var(--pink-100); border-radius: 14px; padding: 16px; }
+  .tip-emoji { font-size: 22px; margin-bottom: 7px; }
+  .tip-title { font-size: 14px; font-weight: 600; color: var(--pink-800); margin-bottom: 4px; }
+  .tip-text { font-size: 13px; color: var(--pink-600); line-height: 1.5; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35); z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--bg); border-radius: 18px; padding: 2rem;
+    width: min(420px, 92vw); box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+  }
+  .modal h3 { font-size: 18px; font-weight: 600; margin-bottom: 1.2rem; color: var(--text); }
+  .modal label { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 5px; margin-top: 12px; }
+  .modal input, .modal select {
+    width: 100%; padding: 10px 12px; border-radius: 10px;
+    border: 0.5px solid var(--pink-100); font-size: 14px;
+    font-family: inherit; color: var(--text); background: var(--surface);
+    outline: none; transition: border-color 0.15s;
+  }
+  .modal input:focus, .modal select:focus { border-color: var(--pink-400); }
+  .modal-actions { display: flex; gap: 10px; margin-top: 1.4rem; }
+  .btn-primary {
+    flex: 1; padding: 10px; border-radius: 10px; border: none;
+    background: var(--pink-400); color: white; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: background 0.15s; font-family: inherit;
+  }
+  .btn-primary:hover { background: var(--pink-600); }
+  .btn-cancel {
+    padding: 10px 18px; border-radius: 10px;
+    border: 0.5px solid var(--pink-100); background: transparent;
+    color: var(--text-muted); font-size: 14px; cursor: pointer; font-family: inherit;
+    transition: background 0.15s;
+  }
+  .btn-cancel:hover { background: var(--pink-50); }
+
+  .empty { padding: 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
+
+  @media (max-width: 540px) {
+    .page { padding: 1.5rem 1rem; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .tips-grid { grid-template-columns: 1fr; }
+    .table-head, .t-row { grid-template-columns: 30px 1fr 80px 80px; }
+    .table-head .th:nth-child(5), .table-head .th:nth-child(6),
+    .t-row > *:nth-child(5), .t-row > *:nth-child(6) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="page-header">
+    <div class="page-emoji">💸</div>
+    <div class="page-title">Mis Finanzas</div>
+    <div class="page-subtitle">✨ Tu dinero, bajo control y con mucho amor 🌸</div>
+  </div>
+
+  <div class="month-nav">
+    <button class="month-btn" onclick="changeMonth(-1)">← anterior</button>
+    <div class="month-label" id="month-label"></div>
+    <button class="month-btn" onclick="changeMonth(1)">siguiente →</button>
+  </div>
+
+  <div class="section-label">📊 resumen del mes</div>
+  <div class="summary-grid">
+    <div class="summary-card income">
+      <div class="s-label">💚 Ingresos</div>
+      <div class="s-val" id="total-income">$0</div>
+    </div>
+    <div class="summary-card expense">
+      <div class="s-label">🌹 Gastos</div>
+      <div class="s-val" id="total-expense">$0</div>
+    </div>
+    <div class="summary-card balance">
+      <div class="s-label">🌸 Balance</div>
+      <div class="s-val" id="total-balance">$0</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">🧾 mis movimientos</div>
+  <div class="table-wrap">
+    <div class="table-head">
+      <div class="th"></div>
+      <div class="th">concepto</div>
+      <div class="th">categoría</div>
+      <div class="th right">monto</div>
+      <div class="th right">fecha</div>
+      <div class="th"></div>
+    </div>
+    <div id="rows-container">
+      <div class="empty">No hay movimientos aún 🌸</div>
+    </div>
+    <button class="add-row-btn" onclick="openModal('movement')">
+      <i class="ti ti-plus"></i> agregar movimiento
+    </button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">🎯 mis metas de ahorro</div>
+  <div id="goals-section"></div>
+  <button class="add-btn" onclick="openModal('goal')">
+    <i class="ti ti-plus"></i> nueva meta 🌷
+  </button>
+
+  <div class="divider"></div>
+
+  <div class="section-label">💡 tips rápidos</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-emoji">🛍️</div>
+      <div class="tip-title">Regla 50/30/20</div>
+      <div class="tip-text">50% necesidades, 30% gustos, 20% ahorro. ¡Sencillo y efectivo!</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-emoji">☕</div>
+      <div class="tip-title">Pequeños gastos</div>
+      <div class="tip-text">Un café diario puede ser $30.000/mes. ¡Anótalos, sorprenden!</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-emoji">📅</div>
+      <div class="tip-title">Revisa cada semana</div>
+      <div class="tip-text">5 minutos los domingos para revisar tus finanzas 🌸</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-emoji">🏦</div>
+      <div class="tip-title">Ahorra primero</div>
+      <div class="tip-text">Separa tu ahorro apenas te paguen, y luego gasta el resto.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal movimiento -->
+<div class="modal-overlay" id="modal-movement">
+  <div class="modal">
+    <h3 id="modal-title">➕ Nuevo movimiento</h3>
+    <label>Concepto</label>
+    <input type="text" id="m-name" placeholder="Ej: Mercado 🛒" />
+    <label>Tipo</label>
+    <select id="m-type" onchange="updateCatOptions()">
+      <option value="expense">Gasto 💸</option>
+      <option value="income">Ingreso 💚</option>
+      <option value="save">Ahorro 🌱</option>
+    </select>
+    <label>Categoría</label>
+    <select id="m-cat">
+      <option value="fijo">🔒 Fijo</option>
+      <option value="variable">🎲 Variable</option>
+    </select>
+    <label>Monto (en pesos)</label>
+    <input type="number" id="m-amount" placeholder="Ej: 350000" min="0" />
+    <label>Fecha</label>
+    <input type="date" id="m-date" />
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('movement')">Cancelar</button>
+      <button class="btn-primary" onclick="saveMovement()">Guardar 🌸</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal meta -->
+<div class="modal-overlay" id="modal-goal">
+  <div class="modal">
+    <h3 id="goal-modal-title">🎯 Nueva meta de ahorro</h3>
+    <label>Nombre de la meta</label>
+    <input type="text" id="g-name" placeholder="Ej: ✈️ Viaje a la playa" />
+    <label>Monto total que necesitas</label>
+    <input type="number" id="g-target" placeholder="Ej: 2000000" min="0" />
+    <label>¿Cuánto llevas ahorrado hasta ahora?</label>
+    <input type="number" id="g-current" placeholder="Ej: 500000" min="0" />
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('goal')">Cancelar</button>
+      <button class="btn-primary" onclick="saveGoal()">Guardar 🌷</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+let rows = [
+  { id:1, name:'Sueldo 💼', cat:'ingreso', amount:3500000, date:'2026-06-01', done:true, type:'income' },
+  { id:2, name:'Arriendo 🏠', cat:'fijo', amount:900000, date:'2026-06-05', done:true, type:'expense' },
+  { id:3, name:'Mercado 🛒', cat:'variable', amount:350000, date:'2026-06-08', done:false, type:'expense' },
+  { id:4, name:'Netflix 🎬', cat:'fijo', amount:49000, date:'2026-06-10', done:false, type:'expense' },
+  { id:5, name:'Ahorro 💰', cat:'ahorro', amount:400000, date:'2026-06-01', done:true, type:'save' },
+];
+let goals = [
+  { id:1, name:'✈️ Viaje a la playa', current:800000, target:2000000 },
+  { id:2, name:'💻 Laptop nueva', current:1200000, target:3000000 },
+];
+let rowId = rows.length + 1;
+let goalId = goals.length + 1;
+let editingGoalId = null;
+
+function fmt(n) { return '$' + Math.round(Math.abs(n)).toLocaleString('es-CO'); }
+function fmtDate(d) {
+  if (!d) return '';
+  const p = d.split('-');
+  return `${parseInt(p[2])} ${MONTHS[parseInt(p[1])-1].slice(0,3).toLowerCase()}`;
+}
+
+function catBadge(cat, type) {
+  if (type === 'income') return `<span class="badge badge-ingreso">💚 ingreso</span>`;
+  if (type === 'save') return `<span class="badge badge-ahorro">🌱 ahorro</span>`;
+  if (cat === 'fijo') return `<span class="badge badge-fijo">🔒 fijo</span>`;
+  return `<span class="badge badge-variable">🎲 variable</span>`;
+}
+
+function renderRows() {
+  const c = document.getElementById('rows-container');
+  let income = 0, expense = 0;
+  rows.forEach(r => {
+    if (r.type === 'income' || r.type === 'save') income += r.amount;
+    else expense += r.amount;
+  });
+  const balance = income - expense;
+  document.getElementById('total-income').textContent = fmt(income);
+  document.getElementById('total-expense').textContent = fmt(expense);
+  const balEl = document.getElementById('total-balance');
+  balEl.textContent = fmt(balance);
+  balEl.style.color = balance >= 0 ? '#27500a' : '#a32d2d';
+
+  if (!rows.length) { c.innerHTML = '<div class="empty">No hay movimientos aún 🌸 ¡Agrega uno!</div>'; return; }
+  c.innerHTML = rows.map(r => `
+    <div class="t-row ${r.done ? 'done-row' : ''}" onclick="toggleRow(${r.id})">
+      <button class="check-btn ${r.done ? 'done' : ''}" onclick="event.stopPropagation();toggleRow(${r.id})" title="${r.done ? 'Desmarcar' : 'Marcar como hecho'}">
+        ${r.done ? '✓' : ''}
+      </button>
+      <div class="row-name ${r.done ? 'done' : ''}">${r.name}</div>
+      <div>${catBadge(r.cat, r.type)}</div>
+      <div class="amount ${r.type === 'expense' ? 'neg' : 'pos'}">${r.type === 'expense' ? '-' : '+'}${fmt(r.amount)}</div>
+      <div class="t-date">${fmtDate(r.date)}</div>
+      <button class="del-btn" onclick="event.stopPropagation();deleteRow(${r.id})" title="Eliminar">
+        <i class="ti ti-trash" style="font-size:14px"></i>
+      </button>
+    </div>
+  `).join('');
+}
+
+function toggleRow(id) {
+  const r = rows.find(x => x.id === id);
+  if (r) { r.done = !r.done; renderRows(); }
+}
+function deleteRow(id) {
+  rows = rows.filter(x => x.id !== id);
+  renderRows();
+}
+
+function renderGoals() {
+  const s = document.getElementById('goals-section');
+  if (!goals.length) { s.innerHTML = '<div class="empty" style="margin-bottom:10px">Sin metas aún 🌷 ¡Crea una!</div>'; return; }
+  s.innerHTML = goals.map(g => {
+    const pct = Math.min(100, Math.round((g.current / g.target) * 100));
+    return `
+      <div class="goal-card" onclick="openEditGoal(${g.id})">
+        <div class="goal-top">
+          <div class="goal-name">${g.name}</div>
+          <div class="goal-pct">${pct}% 🌸</div>
+        </div>
+        <div class="progress-bg">
+          <div class="progress-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="goal-amounts">
+          <span>${fmt(g.current)} ahorrado</span>
+          <span>Meta: ${fmt(g.target)}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openModal(type) {
+  if (type === 'movement') {
+    document.getElementById('modal-title').textContent = '➕ Nuevo movimiento';
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('m-date').value = today;
+    document.getElementById('m-name').value = '';
+    document.getElementById('m-amount').value = '';
+    document.getElementById('m-type').value = 'expense';
+    updateCatOptions();
+    document.getElementById('modal-movement').classList.add('active');
+    setTimeout(() => document.getElementById('m-name').focus(), 100);
+  } else {
+    editingGoalId = null;
+    document.getElementById('goal-modal-title').textContent = '🎯 Nueva meta de ahorro';
+    document.getElementById('g-name').value = '';
+    document.getElementById('g-target').value = '';
+    document.getElementById('g-current').value = '';
+    document.getElementById('modal-goal').classList.add('active');
+    setTimeout(() => document.getElementById('g-name').focus(), 100);
+  }
+}
+
+function openEditGoal(id) {
+  const g = goals.find(x => x.id === id);
+  if (!g) return;
+  editingGoalId = id;
+  document.getElementById('goal-modal-title').textContent = '✏️ Editar meta';
+  document.getElementById('g-name').value = g.name;
+  document.getElementById('g-target').value = g.target;
+  document.getElementById('g-current').value = g.current;
+  document.getElementById('modal-goal').classList.add('active');
+}
+
+function closeModal(type) {
+  document.getElementById('modal-' + type).classList.remove('active');
+}
+
+function updateCatOptions() {
+  const type = document.getElementById('m-type').value;
+  const cat = document.getElementById('m-cat');
+  if (type === 'income') {
+    cat.innerHTML = '<option value="ingreso">💚 Ingreso</option>';
+  } else if (type === 'save') {
+    cat.innerHTML = '<option value="ahorro">🌱 Ahorro</option>';
+  } else {
+    cat.innerHTML = '<option value="fijo">🔒 Fijo</option><option value="variable">🎲 Variable</option>';
+  }
+}
+
+function saveMovement() {
+  const name = document.getElementById('m-name').value.trim();
+  const amount = parseFloat(document.getElementById('m-amount').value);
+  const type = document.getElementById('m-type').value;
+  const cat = document.getElementById('m-cat').value;
+  const date = document.getElementById('m-date').value;
+  if (!name || isNaN(amount) || amount <= 0) { alert('Por favor completa todos los campos 🌸'); return; }
+  rows.push({ id: rowId++, name, cat, amount, date, done: false, type });
+  renderRows();
+  closeModal('movement');
+}
+
+function saveGoal() {
+  const name = document.getElementById('g-name').value.trim();
+  const target = parseFloat(document.getElementById('g-target').value);
+  const current = parseFloat(document.getElementById('g-current').value) || 0;
+  if (!name || isNaN(target) || target <= 0) { alert('Por favor completa los campos 🌷'); return; }
+  if (editingGoalId) {
+    const g = goals.find(x => x.id === editingGoalId);
+    if (g) { g.name = name; g.target = target; g.current = current; }
+  } else {
+    goals.push({ id: goalId++, name, current, target });
+  }
+  renderGoals();
+  closeModal('goal');
+}
+
+function changeMonth(dir) {
+  currentMonth += dir;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  document.getElementById('month-label').textContent = `${MONTHS[currentMonth]} ${currentYear}`;
+}
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('active'); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(el => el.classList.remove('active'));
+});
+
+document.getElementById('month-label').textContent = `${MONTHS[currentMonth]} ${currentYear}`;
+renderRows();
+renderGoals();
+</script>
+</body>
+</html>
